@@ -9,7 +9,7 @@ import lombok.Data;
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String adSoyad;
     private String uzmanlikAlani;
     private String telefon;

@@ -1,4 +1,4 @@
-package entity;
+package com.example.Hospital.entity;
 
 public enum Role {
     ADMIN,

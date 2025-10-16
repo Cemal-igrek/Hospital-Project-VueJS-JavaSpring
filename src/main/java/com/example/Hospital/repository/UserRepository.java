@@ -1,6 +1,6 @@
-package repository;
+package com.example.Hospital.repository;
 
-import entity.User;
+import com.example.Hospital.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

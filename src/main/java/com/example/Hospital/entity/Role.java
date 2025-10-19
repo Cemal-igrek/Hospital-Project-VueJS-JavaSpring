@@ -2,6 +2,6 @@ package com.example.Hospital.entity;
 
 public enum Role {
     ADMIN,
-    DOKTOR,
-    SEKRETER,
+    DOCTOR,     // DOKTOR -> DOCTOR
+    SECRETARY   // SEKRETER -> SECRETARY
 }

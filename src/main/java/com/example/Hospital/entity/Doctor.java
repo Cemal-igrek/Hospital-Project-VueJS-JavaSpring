@@ -4,18 +4,24 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "doctors")
 @Data
-@Table(name = "Doctor")
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String adSoyad;
-    private String uzmanlikAlani;
-    private String telefon;
 
+    // 'adSoyad' -> 'fullName'
+    private String fullName;
+
+    // 'uzmanlikAlani' -> 'specialty'
+    private String specialty;
+
+    // 'telefon' -> 'phone'
+    private String phone;
+
+    // 'user' zaten İngilizce, bu doğru
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
 }

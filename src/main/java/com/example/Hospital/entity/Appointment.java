@@ -2,7 +2,6 @@ package com.example.Hospital.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,17 +12,20 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 'doktor' -> 'doctor'
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doktor;
+    private Doctor doctor;
 
+    // 'hasta' -> 'patient'
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
-    private Patient hasta;
+    private Patient patient;
 
-    private LocalDateTime tarih;
+    // 'tarih' -> 'appointmentDate' ('date' çok genel, bu daha spesifik)
+    private LocalDateTime appointmentDate;
 
-    @Column(columnDefinition = "TEXT") //again string but more much word.
-    private String tani;
-
+    // 'tani' -> 'diagnosis'
+    @Column(columnDefinition = "TEXT")
+    private String diagnosis;
 }

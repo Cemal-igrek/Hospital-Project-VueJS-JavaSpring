@@ -2,7 +2,6 @@ package com.example.Hospital.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDate;
 
 @Entity
@@ -13,11 +12,16 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String adSoyad;
+    // 'adSoyad' -> 'fullName'
+    private String fullName;
 
+    // 'tcKimlikNo' -> 'nationalId' (Ulusal Kimlik No)
     @Column(unique = true, nullable = false)
-    private String tcKimlikNo;
+    private String nationalId;
 
-    private LocalDate dogumTarihi;
-    private String telefon;
+    // 'dogumTarihi' -> 'dateOfBirth'
+    private LocalDate dateOfBirth;
+
+    // 'telefon' -> 'phone'
+    private String phone;
 }

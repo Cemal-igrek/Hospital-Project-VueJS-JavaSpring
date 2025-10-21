@@ -1,5 +1,6 @@
 package com.example.Hospital.service.impl;
 
+import com.example.Hospital.dto.CreateDoctorRequestDto;
 import com.example.Hospital.dto.DoctorDto;
 import com.example.Hospital.entity.Doctor;
 import com.example.Hospital.entity.User;
@@ -24,16 +25,11 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @Transactional
-    public DoctorDto createDoctor(DoctorDto doctorDto) {
-        // Doktorla ilişkilendirilecek kullanıcıyı bul
-        User user = userRepository.findById(doctorDto.userId());
-
-        Doctor doctor = DoctorMapper.toEntity(doctorDto);
-        doctor.setUser(user);
-
-        Doctor savedDoctor = doctorRepository.save(doctor);
-        return DoctorMapper.toDto(savedDoctor);
+    @Transactional(readOnly = true)
+    public List<DoctorDto> getAllDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(DoctorMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -44,28 +40,36 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<DoctorDto> getAllDoctors() {
-        return doctorRepository.findAll().stream()
-                .map(DoctorMapper::toDto)
-                .collect(Collectors.toList());
+    @Transactional
+    public DoctorDto createDoctor(CreateDoctorRequestDto requestDto) {
+        // Doktor profiline bağlanacak kullanıcıyı bul
+        User user = userRepository.findById(requestDto.userId());
+
+        Doctor doctor = new Doctor();
+        doctor.setFullName(requestDto.fullName());
+        doctor.setSpecialty(requestDto.specialty());
+        doctor.setPhone(requestDto.phone());
+        doctor.setUser(user); // Kullanıcıyı bağla
+
+        Doctor savedDoctor = doctorRepository.save(doctor);
+        return DoctorMapper.toDto(savedDoctor);
     }
 
     @Override
     @Transactional
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) {
+    public DoctorDto updateDoctor(Long id, CreateDoctorRequestDto requestDto) {
+        // HATA MUHTEMELEN BURADAYDI:
+        // Metodun 'requestDto' parametresi artık 'CreateDoctorRequestDto' tipinde.
+
         Doctor existingDoctor = doctorRepository.findById(id).orElse(null);
 
-        // Gelen DTO'daki bilgilerle mevcut doktoru güncelle
-        existingDoctor.setFullName(doctorDto.fullName());
-        existingDoctor.setSpecialty(doctorDto.specialty());
-        existingDoctor.setPhone(doctorDto.phone());
+        // İlişkili kullanıcıyı da güncellemek gerekirse
+        User user = userRepository.findById(requestDto.userId());
 
-        // Gerekirse User'ı da güncelle
-        if (doctorDto.userId() != null && !doctorDto.userId().equals(existingDoctor.getUser().getId())) {
-            User user = userRepository.findById(doctorDto.userId());
-            existingDoctor.setUser(user);
-        }
+        existingDoctor.setFullName(requestDto.fullName());
+        existingDoctor.setSpecialty(requestDto.specialty());
+        existingDoctor.setPhone(requestDto.phone());
+        existingDoctor.setUser(user);
 
         Doctor updatedDoctor = doctorRepository.save(existingDoctor);
         return DoctorMapper.toDto(updatedDoctor);
@@ -74,8 +78,6 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     @Transactional
     public void deleteDoctor(Long id) {
-        if(doctorRepository.findById(id).isPresent()) {
-            doctorRepository.deleteById(id);
-        }
+        doctorRepository.deleteById(id);
     }
 }

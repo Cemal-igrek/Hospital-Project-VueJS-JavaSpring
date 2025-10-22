@@ -11,7 +11,7 @@
 
       <div class="form-group" v-if="!isEditMode">
         <label for="password">Şifre:</label>
-        <input type="password" id="password" v-model="user.password" required />
+        <input type="password" id="password" v-model="user.password" :required="!isEditMode" />
       </div>
 
       <div class="form-group">
@@ -21,7 +21,7 @@
 
       <div class="form-group">
         <label for="role">Rol:</label>
-        <select id="role" v-model="user.role" required>
+        <select id="role" v-model="user.role" required :disabled="isEditMode">
           <option disabled value="">Lütfen seçiniz</option>
           <option value="ADMIN">ADMIN</option>
           <option value="DOCTOR">DOKTOR</option>
@@ -29,6 +29,23 @@
         </select>
       </div>
 
+      <div v-if="user.role === 'DOCTOR' && !isEditMode" class="doctor-fields">
+        <div class="form-group">
+          <label for="doctorFullName">Doktor Adı Soyadı:</label>
+          <input type="text" id="doctorFullName" v-model="doctorInfo.fullName" :required="user.role === 'DOCTOR' && !isEditMode"/>
+        </div>
+
+        <div class="form-group">
+          <label for="doctorSpecialty">Uzmanlık Alanı:</label>
+          <input type="text" id="doctorSpecialty" v-model="doctorInfo.specialty" />
+        </div>
+
+        <div class="form-group">
+          <label for="doctorPhone">Telefon:</label>
+          <input type="tel" id="doctorPhone" v-model="doctorInfo.phone" />
+        </div>
+
+      </div>
       <div class="form-group" v-if="isEditMode">
         <label for="active">Hesap Aktif mi?</label>
         <select id="active" v-model="user.active">
@@ -50,16 +67,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, reactive } from 'vue'; // reactive eklendi
 import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
 
+// User form verisi
 const user = ref({
   username: '',
   password: '',
   email: '',
   role: '',
   active: true
+});
+
+// YENİ: Doktor bilgileri için ayrı bir reaktif nesne
+const doctorInfo = reactive({
+  fullName: '',
+  specialty: '',
+  phone: ''
 });
 
 const errorMessage = ref(null);
@@ -85,6 +110,7 @@ onMounted(async () => {
   }
 });
 
+// Formu kaydet/güncelle
 const handleSubmit = async () => {
   errorMessage.value = null;
 
@@ -101,18 +127,28 @@ const handleSubmit = async () => {
         errorMessage.value = "Şifre alanı boş bırakılamaz.";
         return;
       }
+
       const createData = {
         username: user.value.username,
         password: user.value.password,
         email: user.value.email,
-        role: user.value.role
+        role: user.value.role,
+        doctorFullName: user.value.role === 'DOCTOR' ? doctorInfo.fullName : null,
+        doctorSpecialty: user.value.role === 'DOCTOR' ? doctorInfo.specialty : null,
+        doctorPhone: user.value.role === 'DOCTOR' ? doctorInfo.phone : null,
       };
+
+      if (user.value.role === 'DOCTOR' && !createData.doctorFullName) {
+        errorMessage.value = "Rol DOKTOR seçildiğinde Doktor Adı Soyadı zorunludur.";
+        return;
+      }
+
       await apiService.createUser(createData);
     }
-    router.push('/users');
+    router.push('/users'); // Listeye geri dön
   } catch (error) {
     console.error('Kullanıcı kaydedilirken/güncellenirken hata:', error);
-    errorMessage.value = 'İşlem sırasında bir hata oluştu. (Kullanıcı adı/email zaten var mı?)';
+    errorMessage.value = error.response?.data?.message || 'İşlem sırasında bir hata oluştu.'; // Backend'den gelen hatayı göster
   }
 };
 
@@ -122,6 +158,20 @@ const goBack = () => {
 </script>
 
 <style scoped>
+/* Stiller aynı kalabilir, istersen doctor-fields için ek stil ekleyebilirsin */
+.doctor-fields {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #ccc;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 5px;
+}
+.doctor-fields h4 {
+  margin-top: 0;
+  color: #555;
+}
+/* ... (Diğer stiller aynı) ... */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }

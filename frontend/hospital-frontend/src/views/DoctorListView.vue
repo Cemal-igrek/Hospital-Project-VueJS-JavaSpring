@@ -2,20 +2,12 @@
   <div class="page-container">
     <h1>Doktor Yönetimi</h1>
 
-    <RouterLink
-      to="/doctors/new"
-      class="btn-grey add-button"
-      v-if="canAdmin">
-      Yeni Doktor Ekle
-    </RouterLink>
-
     <table>
       <thead>
       <tr>
         <th>Adı Soyadı</th>
         <th>Uzmanlık Alanı</th>
         <th>Telefon</th>
-        <th>İşlemler</th>
       </tr>
       </thead>
       <tbody>
@@ -23,21 +15,6 @@
         <td>{{ doktor.fullName }}</td>
         <td>{{ doktor.specialty }}</td>
         <td>{{ doktor.phone }}</td>
-        <td>
-          <RouterLink
-            :to="`/doctors/${doktor.id}/edit`"
-            class="btn-grey btn-small"
-            v-if="canAdmin">
-            Düzenle
-          </RouterLink>
-
-          <button
-            @click="handleDeleteDoctor(doktor.id)"
-            class="btn-grey btn-small btn-danger"
-            v-if="canAdmin">
-            Sil
-          </button>
-        </td>
       </tr>
       </tbody>
     </table>

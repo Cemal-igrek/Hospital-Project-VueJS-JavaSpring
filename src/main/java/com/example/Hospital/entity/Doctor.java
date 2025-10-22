@@ -17,7 +17,7 @@ public class Doctor {
 
     private String phone;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE) // cascade eklendi
+    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true) // unique=true eklemek iyi bir pratik
     private User user;
 }

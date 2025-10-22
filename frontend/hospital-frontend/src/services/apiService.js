@@ -8,6 +8,9 @@ export default {
   login(credentials) {
     return apiClient.post('/auth/login', credentials);
   },
+  logout() {
+    return apiClient.post('/auth/logout');
+  },
 
   getPatients() {
     return apiClient.get('/patients');

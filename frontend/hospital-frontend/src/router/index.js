@@ -4,7 +4,6 @@ import LoginView from "@/views/LoginView.vue";
 import PatientListView from "@/views/PatientListView.vue";
 import PatientFormView from "@/views/forms/PatientFormView.vue";
 import DoctorListView from "@/views/DoctorListView.vue";
-import DoctorFormView from "@/views/forms/DoctorFormView.vue";
 import AppointmentListView from "@/views/AppointmentListView.vue";
 import AppointmentFormView from "@/views/forms/AppointmentFormView.vue";
 import PrescriptionListView from "@/views/PrescriptionListView.vue";
@@ -22,8 +21,6 @@ const routes = [
   { path: '/patients/:id/edit', name: 'patient-edit', component: PatientFormView, meta: { roles: ['ADMIN', 'SECRETARY'] } },
 
   { path: '/doctors', name: 'doctors', component: DoctorListView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
-  { path: '/doctors/new', name: 'doctor-new', component: DoctorFormView, meta: { roles: ['ADMIN'] } },
-  { path: '/doctors/:id/edit', name: 'doctor-edit', component: DoctorFormView, meta: { roles: ['ADMIN'] } },
 
   { path: '/appointments', name: 'appointments', component: AppointmentListView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
   { path: '/appointments/new', name: 'appointment-new', component: AppointmentFormView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },

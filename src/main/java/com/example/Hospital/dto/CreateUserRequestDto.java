@@ -6,5 +6,8 @@ public record CreateUserRequestDto(
         String username,
         String password,
         String email,
-        Role role
+        Role role,
+        String doctorFullName,
+        String doctorSpecialty,
+        String doctorPhone
 ) {}

@@ -22,19 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Spring Security AuthenticationManager tarafından çağrılır.
-     * Kullanıcı adını alır, veritabanından kullanıcıyı bulur ve
-     * Spring Security'nin anlayacağı UserDetails nesnesini döndürür.
-     * @param username Giriş formundan gelen kullanıcı adı
-     * @return UserDetails Spring Security'nin kullanacağı kullanıcı bilgisi
-     * @throws UsernameNotFoundException Kullanıcı bulunamazsa fırlatılır
-     */
     @Override
-    @Transactional(readOnly = true) // Sadece okuma işlemi
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        // 1. Veritabanından kendi User entity'mizi bul
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 

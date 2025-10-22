@@ -8,8 +8,6 @@ public class AppointmentMapper {
         if (appointment == null) {
             return null;
         }
-
-        // İlişkili nesneleri de kendi DTO'larına çeviriyoruz.
         return new AppointmentDto(
                 appointment.getId(),
                 appointment.getAppointmentDate(),
@@ -19,6 +17,4 @@ public class AppointmentMapper {
         );
     }
 
-    // Not: toEntity metodu burada basit tutulmuştur çünkü
-    // Doctor ve Patient nesnelerinin atanması Service katmanında yapılacaktır.
 }

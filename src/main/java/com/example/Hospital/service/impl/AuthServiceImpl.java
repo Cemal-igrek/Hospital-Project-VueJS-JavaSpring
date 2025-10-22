@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final long jwtExpirationMs; // Cookie 'maxAge' için
-    private final PasswordEncoder passwordEncoder; // YENİ: Şifre değişikliği için
+    private final PasswordEncoder passwordEncoder;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
@@ -114,28 +114,18 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userRepository.findByUsername(username).orElse(null);
 
-        // 1. Eski şifreyi kontrol et
         if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Wrong old password"); // Veya özel bir exception
+            throw new IllegalArgumentException("Wrong old password");
         }
 
-        // 2. Yeni şifreyi hash'le ve kaydet
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
 
-    // EKLENECEK 4: Refresh Token (Opsiyonel)
     @Override
     public UserDto refreshToken(RefreshTokenRequestDto request, HttpServletResponse response) {
         // TODO: Refresh token mantığı burada implemente edilmeli
-        // 1. Gelen request.refreshToken() veritabanında/cache'te var mı? Geçerli mi?
-        // 2. Eğer geçerliyse, o token'a ait kullanıcıyı bul (örn: User user = ...)
-        // 3. O kullanıcı için yeni bir access token (JWT) üret:
-        //    String token = jwtService.generateToken(new UserDetailsServiceImpl.CustomUserDetails(user));
-        // 4. Yeni token'ı httpOnly cookie olarak set et (logout'taki gibi)
-        // 5. O kullanıcıya ait UserDto'yu döndür
 
-        // Şimdilik taslak:
         throw new UnsupportedOperationException("Refresh token functionality not implemented yet.");
     }
 }

@@ -19,7 +19,6 @@ public class PrescriptionController {
         this.prescriptionService = prescriptionService;
     }
 
-    // Reçeteleri sadece DOKTOR ve ADMIN görebilir [cite: 87, 90]
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<PrescriptionDto> getPrescriptionById(@PathVariable Long id) {
@@ -27,7 +26,6 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescription);
     }
 
-    // Bir muayeneye ait reçeteleri listeleme
     @GetMapping("/by-appointment/{appointmentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<List<PrescriptionDto>> getPrescriptionsByAppointment(@PathVariable Long appointmentId) {
@@ -38,15 +36,13 @@ public class PrescriptionController {
         }
     }
 
-    // Reçete oluşturma (yazma)
     @PostMapping
-    @PreAuthorize("hasRole('DOCTOR')") // Reçeteyi sadece DOKTOR yazabilir
+    @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<PrescriptionDto> createPrescription(@RequestBody CreatePrescriptionRequestDto requestDto) {
         PrescriptionDto newPrescription = prescriptionService.createPrescription(requestDto);
         return new ResponseEntity<>(newPrescription, HttpStatus.CREATED);
     }
 
-    // PDF'te reçete güncelleme (7.6) belirtilmiş [cite: 121]
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<PrescriptionDto> updatePrescription(@PathVariable Long id, @RequestBody CreatePrescriptionRequestDto requestDto) {
@@ -56,7 +52,7 @@ public class PrescriptionController {
 
     // Reçete silme
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')") // Doktor kendi yazdığını veya Admin silebilir [cite: 87, 90]
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<Void> deletePrescription(@PathVariable Long id) {
         prescriptionService.deletePrescription(id);
         return ResponseEntity.noContent().build();

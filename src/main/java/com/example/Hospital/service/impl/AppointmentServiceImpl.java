@@ -33,7 +33,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public AppointmentDto createAppointment(CreateAppointmentRequestDto requestDto) {
-        // İlişkili doktor ve hastayı ID'lerinden bul
         Doctor doctor = doctorRepository.findById(requestDto.doctorId()).orElse(null);
 
         Patient patient = patientRepository.findById(requestDto.patientId()).orElse(null);
@@ -86,7 +85,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDto updateAppointment(Long id, CreateAppointmentRequestDto requestDto) {
         Appointment existingAppointment = appointmentRepository.findById(id).orElse(null);
 
-        // Gerekirse doktor veya hastayı da güncelle
         if (!requestDto.doctorId().equals(existingAppointment.getDoctor().getId())) {
             Doctor doctor = doctorRepository.findById(requestDto.doctorId()).orElse(null);
             existingAppointment.setDoctor(doctor);

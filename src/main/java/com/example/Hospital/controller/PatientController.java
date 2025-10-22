@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/patients") // PDF'teki /api/hastalar
+@RequestMapping("/api/patients")
 public class PatientController {
     private final PatientService patientService;
 
@@ -18,7 +18,6 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    // Hasta bilgilerini görüntüleme
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<List<PatientDto>> getAllPatients() {
@@ -32,7 +31,6 @@ public class PatientController {
         return ResponseEntity.ok(patient);
     }
 
-    // Yeni hasta kaydını SEKRETER ve ADMIN yapabilir
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY')")
     public ResponseEntity<PatientDto> createPatient(@RequestBody PatientDto patientDto) {
@@ -40,7 +38,6 @@ public class PatientController {
         return new ResponseEntity<>(newPatient, HttpStatus.CREATED);
     }
 
-    // Hasta güncellemeyi SEKRETER ve ADMIN yapabilir
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY')")
     public ResponseEntity<PatientDto> updatePatient(@PathVariable Long id, @RequestBody PatientDto patientDto) {
@@ -48,7 +45,6 @@ public class PatientController {
         return ResponseEntity.ok(updatedPatient);
     }
 
-    // Hasta silme (yıkıcı işlem) sadece ADMIN'e aittir
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {

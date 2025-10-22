@@ -12,18 +12,14 @@ public class Prescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 'muayene' -> 'appointment' (Bu reçete bir muayeneye aittir)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private Appointment appointment;
 
-    // 'ilacAdi' -> 'medicationName'
     private String medicationName;
 
-    // 'doz' -> 'dose'
     private String dose;
 
-    // 'aciklama' -> 'instructions' (Açıklama/Talimatlar)
     @Column(columnDefinition = "TEXT")
     private String instructions;
 }

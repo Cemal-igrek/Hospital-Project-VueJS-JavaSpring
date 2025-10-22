@@ -10,12 +10,9 @@ public interface AuthService {
     UserDto login(LoginRequestDto loginRequest, HttpServletResponse response);
     void logout(HttpServletResponse response);
 
-    // EKLENECEK 2: Get Current User
     UserDto getCurrentUser();
 
-    // EKLENECEK 3: Change Password
     void changePassword(ChangePasswordDto request);
 
-    // EKLENECEK 4: Refresh Token (Opsiyonel)
     UserDto refreshToken(RefreshTokenRequestDto request, HttpServletResponse response);
 }

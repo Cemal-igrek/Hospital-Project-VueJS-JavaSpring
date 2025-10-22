@@ -26,7 +26,7 @@ public class DoctorMapper {
         doctor.setFullName(doctorDto.fullName());
         doctor.setSpecialty(doctorDto.specialty());
         doctor.setPhone(doctorDto.phone());
-        // User nesnesi Service katmanında ayrıca ayarlanacaktır.
+
         return doctor;
     }
 }

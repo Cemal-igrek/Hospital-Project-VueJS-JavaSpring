@@ -63,7 +63,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public PrescriptionDto updatePrescription(Long id, CreatePrescriptionRequestDto requestDto) {
         Prescription existingPrescription = prescriptionRepository.findById(id).orElse(null);
 
-        // Muayene ID'sini güncellemek gerekirse
         if (!requestDto.appointmentId().equals(existingPrescription.getAppointment().getId())) {
             Appointment appointment = appointmentRepository.findById(requestDto.appointmentId()).orElse(null);
             existingPrescription.setAppointment(appointment);

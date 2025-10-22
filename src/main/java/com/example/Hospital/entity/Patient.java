@@ -12,16 +12,12 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 'adSoyad' -> 'fullName'
     private String fullName;
 
-    // 'tcKimlikNo' -> 'nationalId' (Ulusal Kimlik No)
     @Column(unique = true, nullable = false)
     private String nationalId;
 
-    // 'dogumTarihi' -> 'dateOfBirth'
     private LocalDate dateOfBirth;
 
-    // 'telefon' -> 'phone'
     private String phone;
 }

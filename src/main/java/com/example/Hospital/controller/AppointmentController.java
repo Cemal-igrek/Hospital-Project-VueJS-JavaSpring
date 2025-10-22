@@ -19,7 +19,6 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // Muayeneleri listeleme ve görme
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
@@ -33,21 +32,18 @@ public class AppointmentController {
         return ResponseEntity.ok(appointment);
     }
 
-    // Mantıksal ekleme: Doktora göre muayene listeleme
     @GetMapping("/by-doctor/{doctorId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByDoctor(@PathVariable Long doctorId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByDoctorId(doctorId));
     }
 
-    // Mantıksal ekleme: Hastaya göre muayene listeleme
     @GetMapping("/by-patient/{patientId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByPatient(@PathVariable Long patientId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByPatientId(patientId));
     }
 
-    // Muayene/Randevu oluşturma (SEKRETER, DOKTOR) ve güncelleme
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<AppointmentDto> createAppointment(@RequestBody CreateAppointmentRequestDto requestDto) {
@@ -62,7 +58,6 @@ public class AppointmentController {
         return ResponseEntity.ok(updatedAppointment);
     }
 
-    // Muayene silme (yıkıcı işlem) sadece ADMIN'e aittir
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {

@@ -42,14 +42,13 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     @Transactional
     public DoctorDto createDoctor(CreateDoctorRequestDto requestDto) {
-        // Doktor profiline bağlanacak kullanıcıyı bul
         User user = userRepository.findById(requestDto.userId());
 
         Doctor doctor = new Doctor();
         doctor.setFullName(requestDto.fullName());
         doctor.setSpecialty(requestDto.specialty());
         doctor.setPhone(requestDto.phone());
-        doctor.setUser(user); // Kullanıcıyı bağla
+        doctor.setUser(user);
 
         Doctor savedDoctor = doctorRepository.save(doctor);
         return DoctorMapper.toDto(savedDoctor);
@@ -58,12 +57,9 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     @Transactional
     public DoctorDto updateDoctor(Long id, CreateDoctorRequestDto requestDto) {
-        // HATA MUHTEMELEN BURADAYDI:
-        // Metodun 'requestDto' parametresi artık 'CreateDoctorRequestDto' tipinde.
 
         Doctor existingDoctor = doctorRepository.findById(id).orElse(null);
 
-        // İlişkili kullanıcıyı da güncellemek gerekirse
         User user = userRepository.findById(requestDto.userId());
 
         existingDoctor.setFullName(requestDto.fullName());

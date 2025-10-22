@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserDto user = userService.getUserById(id);
-        return ResponseEntity.ok(user); // Servis katmanı ResourceNotFoundException fırlatmalı
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping

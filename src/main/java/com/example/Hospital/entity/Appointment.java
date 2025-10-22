@@ -12,20 +12,16 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 'doktor' -> 'doctor'
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    // 'hasta' -> 'patient'
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    // 'tarih' -> 'appointmentDate' ('date' çok genel, bu daha spesifik)
     private LocalDateTime appointmentDate;
 
-    // 'tani' -> 'diagnosis'
     @Column(columnDefinition = "TEXT")
     private String diagnosis;
 }

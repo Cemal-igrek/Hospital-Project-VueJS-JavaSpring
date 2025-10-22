@@ -19,7 +19,6 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    // Doktorları listeleme (Randevu/Görüşme için)
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECRETARY', 'DOCTOR')")
     public ResponseEntity<List<DoctorDto>> getAllDoctors() {
@@ -33,7 +32,6 @@ public class DoctorController {
         return ResponseEntity.ok(doctor);
     }
 
-    // Doktor yönetimi (Ekleme, Güncelleme, Silme) sadece ADMIN'e aittir
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DoctorDto> createDoctor(@RequestBody CreateDoctorRequestDto requestDto) {

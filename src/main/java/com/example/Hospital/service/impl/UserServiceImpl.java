@@ -42,18 +42,12 @@ public class UserServiceImpl implements UserService {
         user.setRole(requestDto.role());
         user.setActive(true);
 
-        // 1. User'ı kaydet
         User savedUser = userRepository.save(user);
 
-        // 2. *** DEĞİŞEN KISIM: Rol DOCTOR ise DTO'dan gelen bilgilerle Doctor oluştur ***
         if (savedUser.getRole() == Role.DOCTOR) {
 
-            // DTO'dan gelen doktor bilgilerini kontrol et (Frontend göndermemiş olabilir)
             if (requestDto.doctorFullName() == null || requestDto.doctorFullName().isBlank()) {
-                // Eğer frontend bilgileri göndermediyse (veya validasyon eklenirse) hata fırlatılabilir
                 throw new IllegalArgumentException("Doctor details (Full Name) are required when creating a user with DOCTOR role.");
-                // VEYA placeholder kullanmaya geri dönebiliriz:
-                // doctor.setFullName("Lütfen Güncelleyin");
             }
 
             Doctor doctor = new Doctor();

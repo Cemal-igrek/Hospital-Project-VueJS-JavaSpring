@@ -2,7 +2,12 @@
   <div class="page-container">
     <h1>Hasta Yönetimi</h1>
 
-    <button class="btn-grey">Yeni Hasta Ekle</button>
+    <RouterLink
+      to="/patients/new"
+      class="btn-grey add-button"
+      v-if="canAdmin || canSecretary">
+      Yeni Hasta Ekle
+    </RouterLink>
 
     <table>
       <thead>
@@ -19,95 +24,97 @@
         <td>{{ hasta.nationalId }}</td>
         <td>{{ hasta.phone }}</td>
         <td>
-          <button class="btn-grey btn-small">Düzenle</button>
-          <button class="btn-grey btn-small btn-danger">Sil</button>
+          <RouterLink
+            :to="`/patients/${hasta.id}/edit`"
+            class="btn-grey btn-small"
+            v-if="canAdmin || canSecretary">
+            Düzenle
+          </RouterLink>
+
+          <button
+            @click="handleDeletePatient(hasta.id)"
+            class="btn-grey btn-small btn-danger"
+            v-if="canAdmin">
+            Sil
+          </button>
         </td>
       </tr>
       </tbody>
     </table>
+
+    <p v-if="loading">Yükleniyor...</p>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script setup>
-// Burası Vue 3'ün modern JavaScript (<script>) bloğudur
-
-// 1. Gerekli Vue fonksiyonlarını ve API servisimizi import ediyoruz
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { RouterLink } from 'vue-router'; // RouterLink'i import et
 import apiService from '@/services/apiService';
+import { authStore } from '@/store/auth'; // Rol kontrolü için store
 
-// 2. 'hastalar' adında reaktif bir değişken oluşturuyoruz.
-// 'ref', içindeki veri değiştiğinde Vue'nin haberdar olmasını ve
-// <template> bölümünü otomatik güncellemesini sağlar.
 const hastalar = ref([]);
+const loading = ref(false);
+const errorMessage = ref(null);
 
-// 3. 'onMounted', Vue component'i (sayfası) ekrana yüklendiği an
-// bir kez çalışan bir fonksiyondur (Angular'daki ngOnInit gibi).
-onMounted(async () => {
+// Rol kontrolü için computed değişkenler
+const user = computed(() => authStore.user);
+const canAdmin = computed(() => user.value?.role === 'ADMIN');
+const canSecretary = computed(() => user.value?.role === 'SECRETARY');
+
+// Veriyi çekme fonksiyonu (tekrar kullanılabilir hale getirdik)
+const fetchPatients = async () => {
+  loading.value = true;
+  errorMessage.value = null;
   try {
-    // API servisimizden hastaları çekiyoruz
     const response = await apiService.getPatients();
-
-    // Gelen veriyi 'hastalar' reaktif değişkenimize atıyoruz.
-    // 'ref' ile oluşturulan değişkene erişmek için '.value' kullanılır.
     hastalar.value = response.data;
   } catch (error) {
-    console.error('Hastaları çekerken hata oluştu:', error);
-    // TODO: Kullanıcıya bir hata mesajı göster
+    console.error('Hastaları çekerken hata:', error);
+    errorMessage.value = 'Hasta verileri alınamadı.';
+  } finally {
+    loading.value = false;
   }
-});
+};
+
+// Component yüklendiğinde hastaları çek
+onMounted(fetchPatients);
+
+// SİL BUTONU METODU
+const handleDeletePatient = async (id) => {
+  // Kullanıcıdan onay al
+  if (confirm('Bu hastayı silmek istediğinizden emin misiniz?')) {
+    try {
+      // API'yi çağır
+      await apiService.deletePatient(id);
+      // Başarılı olursa:
+      // 1. Yöntem: Listeyi yeniden çek (en kolayı)
+      fetchPatients();
+      // 2. Yöntem: Silinen hastayı 'hastalar' array'inden manuel çıkar (daha performanslı)
+      // hastalar.value = hastalar.value.filter(h => h.id !== id);
+    } catch (error) {
+      console.error('Hasta silinirken hata:', error);
+      errorMessage.value = 'Hasta silinemedi.';
+    }
+  }
+};
 </script>
 
 <style scoped>
-/* 'scoped' kelimesi, bu CSS'in SADECE bu component (.vue dosyası)
- içinde geçerli olmasını sağlar, başka sayfaları etkilemez.
-*/
-.page-container {
-  padding: 20px;
-  background-color: #fff; /* PDF'in istediği beyaz zemin [cite: 7] */
+/* Stiller öncekiyle aynı, sadece add-button için margin ekleyebiliriz */
+.add-button {
+  margin-bottom: 15px;
+  display: inline-block; /* Buton gibi davranması için */
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f4f4f4;
-}
-
-/* PDF'in istediği gri butonlar [cite: 7] */
-.btn-grey {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-right: 5px;
-}
-
-.btn-grey:hover {
-  background-color: #e0e0e0;
-}
-
-.btn-small {
-  padding: 4px 8px;
-  font-size: 0.9em;
-}
-
-.btn-danger {
-  border-color: #d9534f;
-  color: #d9534f;
-}
-
-.btn-danger:hover {
-  background-color: #d9534f;
-  color: white;
-}
+/* ... (Diğer stil kodları aynı) ... */
+.page-container { padding: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f4f4f4; }
+.btn-grey { background-color: #f0f0f0; border: 1px solid #ccc; padding: 8px 12px; cursor: pointer; border-radius: 4px; margin-right: 5px; text-decoration: none; /* RouterLink için */ color: inherit; /* RouterLink için */ }
+.btn-grey:hover { background-color: #e0e0e0; }
+.btn-small { padding: 4px 8px; font-size: 0.9em; }
+.btn-danger { border-color: #d9534f; color: #d9534f; }
+.btn-danger:hover { background-color: #d9534f; color: white; }
+.error-message { color: red; }
 </style>

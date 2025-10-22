@@ -57,11 +57,9 @@ const doktorlar = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Rol kontrolü
 const user = computed(() => authStore.user);
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 
-// Veri çekme fonksiyonu
 const fetchDoctors = async () => {
   loading.value = true;
   error.value = null;
@@ -78,12 +76,11 @@ const fetchDoctors = async () => {
 
 onMounted(fetchDoctors);
 
-// Silme fonksiyonu
 const handleDeleteDoctor = async (id) => {
   if (confirm('Bu doktoru silmek istediğinizden emin misiniz?')) {
     try {
       await apiService.deleteDoctor(id);
-      fetchDoctors(); // Listeyi yenile
+      fetchDoctors();
     } catch (err) {
       error.value = 'Doktor silinemedi.';
       console.error(err);
@@ -93,7 +90,6 @@ const handleDeleteDoctor = async (id) => {
 </script>
 
 <style scoped>
-/* Stiller diğer listeleme sayfalarıyla aynı */
 .add-button { margin-bottom: 15px; display: inline-block; }
 .page-container { padding: 20px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }

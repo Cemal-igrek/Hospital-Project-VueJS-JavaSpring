@@ -39,10 +39,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Yönlendirme ve mevcut route bilgisi için
+import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
 
-// Form verilerini tutacak reaktif nesne
 const patient = ref({
   fullName: '',
   nationalId: '',
@@ -51,21 +50,16 @@ const patient = ref({
 });
 
 const errorMessage = ref(null);
-const router = useRouter(); // Yönlendirme fonksiyonları
-const route = useRoute(); // Mevcut route (URL) bilgileri (/patients/:id/edit gibi)
+const router = useRouter();
+const route = useRoute();
 
-// URL'de 'id' parametresi varsa düzenleme modundayız demektir
 const patientId = computed(() => route.params.id);
 const isEditMode = computed(() => !!patientId.value); // ID varsa true, yoksa false
 
-// Component yüklendiğinde çalışır
 onMounted(async () => {
-  // Eğer düzenleme modundaysak (URL'de ID varsa)
   if (isEditMode.value) {
     try {
-      // API'den o ID'li hastanın bilgilerini çek
       const response = await apiService.getPatientById(patientId.value);
-      // Gelen veriyi formdaki 'patient' nesnesine ata
       patient.value = response.data;
     } catch (error) {
       console.error('Hasta bilgisi çekilirken hata:', error);
@@ -74,18 +68,14 @@ onMounted(async () => {
   }
 });
 
-// Form submit edildiğinde çalışacak metot
 const handleSubmit = async () => {
-  errorMessage.value = null; // Önceki hataları temizle
+  errorMessage.value = null;
   try {
     if (isEditMode.value) {
-      // Düzenleme modundaysak: Update API'sini çağır
       await apiService.updatePatient(patientId.value, patient.value);
     } else {
-      // Ekleme modundaysak: Create API'sini çağır
       await apiService.createPatient(patient.value);
     }
-    // Başarılı olursa hasta listesi sayfasına geri dön
     router.push('/patients');
   } catch (error) {
     console.error('Hasta kaydedilirken/güncellenirken hata:', error);
@@ -93,14 +83,12 @@ const handleSubmit = async () => {
   }
 };
 
-// İptal butonuna basıldığında listeye geri dön
 const goBack = () => {
   router.push('/patients');
 };
 </script>
 
 <style scoped>
-/* Diğer view'lardaki stillere ek olarak form stilleri */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }

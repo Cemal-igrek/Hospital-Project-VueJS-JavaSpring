@@ -1,7 +1,6 @@
 <template>
   <div class="page-container">
     <h1>Giriş Yap</h1>
-    <p>PDF'e göre login sayfası [cite: 123]</p>
 
     <form @submit.prevent="handleLogin" class="login-form">
       <div class="form-group">
@@ -24,16 +23,15 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import apiService from '@/services/apiService';
-import { authStore } from '@/store/auth'; // 1. Global store'u import et
+import { authStore } from '@/store/auth';
 
-// Form inputlarına bağlanacak reaktif değişkenler
+
 const username = ref('');
 const password = ref('');
 const errorMessage = ref(null);
 
-const router = useRouter(); // Yönlendirici
+const router = useRouter();
 
-// Form submit edildiğinde çalışacak metot
 const handleLogin = async () => {
   try {
     const credentials = {
@@ -41,20 +39,18 @@ const handleLogin = async () => {
       password: password.value
     };
 
-    // API'ye giriş isteği at (Backend httpOnly cookie'yi set edecek)
     const response = await apiService.login(credentials);
 
-    // 2. Başarılı girişte dönen UserDto'yu global store'a kaydet
     authStore.setUser(response.data);
 
     errorMessage.value = null;
 
-    // 3. Kullanıcıyı anasayfaya (veya ilk sayfasına) yönlendir
-    router.push('/patients'); // (veya /dashboard gibi bir anasayfa)
+
+    router.push('/patients');
 
   } catch (error) {
     console.error('Giriş hatası:', error);
-    authStore.logout(); // Hata olursa store'u temizle
+    authStore.logout();
     errorMessage.value = 'Kullanıcı adı veya şifre hatalı.';
   }
 };

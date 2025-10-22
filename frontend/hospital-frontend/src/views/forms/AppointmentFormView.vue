@@ -50,17 +50,16 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
-import { authStore } from '@/store/auth'; // Rol kontrolü için
+import { authStore } from '@/store/auth';
 
 // Form verisi
 const appointment = ref({
-  doctorId: '', // Select için başlangıç değeri boş olmalı
+  doctorId: '',
   patientId: '',
   appointmentDate: '',
   diagnosis: ''
 });
 
-// Dropdown'lar için listeler
 const availableDoctors = ref([]);
 const availablePatients = ref([]);
 
@@ -71,14 +70,11 @@ const route = useRoute();
 const appointmentId = computed(() => route.params.id);
 const isEditMode = computed(() => !!appointmentId.value);
 
-// Rol kontrolleri
 const user = computed(() => authStore.user);
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 const canDoctor = computed(() => user.value?.role === 'DOCTOR');
 
-// Component yüklendiğinde hem dropdown verilerini hem de (varsa) düzenlenecek randevuyu çek
 onMounted(async () => {
-  // 1. Doktorları ve Hastaları çek (Dropdown için)
   try {
     const [doctorsRes, patientsRes] = await Promise.all([
       apiService.getDoctors(),
@@ -91,15 +87,12 @@ onMounted(async () => {
     console.error(error);
   }
 
-  // 2. Düzenleme modundaysak, mevcut randevu verisini çek
   if (isEditMode.value) {
     try {
       const response = await apiService.getAppointmentById(appointmentId.value);
       const data = response.data;
-      // API'den gelen veriyi form modeline ata
       appointment.value.doctorId = data.doctor.id; // İç içe objeden ID'yi al
       appointment.value.patientId = data.patient.id;
-      // Tarih formatı backend'den nasıl geliyorsa ona göre parse etmek gerekebilir
       appointment.value.appointmentDate = data.appointmentDate.substring(0, 16); // 'YYYY-MM-DDTHH:mm' formatı
       appointment.value.diagnosis = data.diagnosis;
     } catch (error) {
@@ -109,10 +102,8 @@ onMounted(async () => {
   }
 });
 
-// Formu kaydet/güncelle
 const handleSubmit = async () => {
   errorMessage.value = null;
-  // API'ye gönderilecek veri (CreateAppointmentRequestDto formatında)
   const appointmentData = {
     doctorId: appointment.value.doctorId,
     patientId: appointment.value.patientId,
@@ -126,7 +117,7 @@ const handleSubmit = async () => {
     } else {
       await apiService.createAppointment(appointmentData);
     }
-    router.push('/appointments'); // Listeye geri dön
+    router.push('/appointments');
   } catch (error) {
     console.error('Muayene kaydedilirken/güncellenirken hata:', error);
     errorMessage.value = 'İşlem sırasında bir hata oluştu.';
@@ -139,7 +130,6 @@ const goBack = () => {
 </script>
 
 <style scoped>
-/* Stiller diğer formlarla benzer, select ve textarea eklendi */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }

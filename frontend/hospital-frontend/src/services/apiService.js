@@ -5,15 +5,10 @@ const apiClient = axios.create({
 });
 apiClient.defaults.withCredentials = true;
 export default {
-  // --- Auth Services ---
   login(credentials) {
-    // credentials = { username: '...', password: '...' }
     return apiClient.post('/auth/login', credentials);
   },
-  // TODO: getCurrentUser() { return apiClient.get('/auth/me'); }
-  // TODO: changePassword(data) { return apiClient.put('/auth/change-password', data); }
 
-  // --- Patient Services ---
   getPatients() {
     return apiClient.get('/patients');
   },
@@ -30,7 +25,6 @@ export default {
     return apiClient.delete(`/patients/${id}`);
   },
 
-  // --- Doctor Services ---
   getDoctors() {
     return apiClient.get('/doctors');
   },
@@ -47,7 +41,6 @@ export default {
     return apiClient.delete(`/doctors/${id}`);
   },
 
-  // --- User Services (for Admin) ---
   getUsers() {
     return apiClient.get('/users');
   },
@@ -64,7 +57,6 @@ export default {
     return apiClient.delete(`/users/${id}`);
   },
 
-  // --- Appointment Services ---
   getAppointments() {
     return apiClient.get('/appointments');
   },
@@ -81,7 +73,6 @@ export default {
     return apiClient.delete(`/appointments/${id}`);
   },
 
-  // --- Prescription Services ---
   getPrescriptionById(id) {
     return apiClient.get(`/prescriptions/${id}`);
   },

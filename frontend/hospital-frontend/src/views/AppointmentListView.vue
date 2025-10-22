@@ -58,13 +58,11 @@ const muayeneler = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Rol kontrolü
 const user = computed(() => authStore.user);
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 const canDoctor = computed(() => user.value?.role === 'DOCTOR');
 const canSecretary = computed(() => user.value?.role === 'SECRETARY');
 
-// Veri çekme
 const fetchAppointments = async () => {
   loading.value = true;
   error.value = null;
@@ -86,7 +84,7 @@ const handleDeleteAppointment = async (id) => {
   if (confirm('Bu muayeneyi silmek istediğinizden emin misiniz?')) {
     try {
       await apiService.deleteAppointment(id);
-      fetchAppointments(); // Listeyi yenile
+      fetchAppointments();
     } catch (err) {
       error.value = 'Muayene silinemedi.';
       console.error(err);
@@ -94,20 +92,18 @@ const handleDeleteAppointment = async (id) => {
   }
 };
 
-// Basit tarih formatlama yardımcısı
 const formatDateTime = (dateTimeString) => {
   if (!dateTimeString) return '';
   try {
     const date = new Date(dateTimeString);
-    return date.toLocaleString('tr-TR'); // Lokal tarih/saat formatı
+    return date.toLocaleString('tr-TR');
   } catch (e) {
-    return dateTimeString; // Hata olursa orijinali döndür
+    return dateTimeString;
   }
 };
 </script>
 
 <style scoped>
-/* Stiller diğer listeleme sayfalarıyla aynı */
 .add-button { margin-bottom: 15px; display: inline-block; }
 .page-container { padding: 20px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }

@@ -54,13 +54,12 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
 
-// Form verisi
 const user = ref({
   username: '',
-  password: '', // Sadece ekleme için
+  password: '',
   email: '',
-  role: '', // Select için başlangıç
-  active: true // Düzenleme için
+  role: '',
+  active: true
 });
 
 const errorMessage = ref(null);
@@ -70,19 +69,15 @@ const route = useRoute();
 const userId = computed(() => route.params.id);
 const isEditMode = computed(() => !!userId.value);
 
-// Component yüklendiğinde
 onMounted(async () => {
-  // Düzenleme modundaysak, mevcut kullanıcı verisini çek
   if (isEditMode.value) {
     try {
       const response = await apiService.getUserById(userId.value);
       const data = response.data;
-      // API'den gelen veriyi form modeline ata
       user.value.username = data.username;
       user.value.email = data.email;
       user.value.role = data.role;
       user.value.active = data.active;
-      // Şifre alanı düzenlemede gösterilmez/doldurulmaz
     } catch (error) {
       errorMessage.value = 'Kullanıcı bilgileri yüklenemedi.';
       console.error(error);
@@ -90,13 +85,11 @@ onMounted(async () => {
   }
 });
 
-// Formu kaydet/güncelle
 const handleSubmit = async () => {
   errorMessage.value = null;
 
   try {
     if (isEditMode.value) {
-      // Düzenleme: UpdateUserRequestDto formatında veri gönder
       const updateData = {
         email: user.value.email,
         role: user.value.role,
@@ -104,7 +97,6 @@ const handleSubmit = async () => {
       };
       await apiService.updateUser(userId.value, updateData);
     } else {
-      // Ekleme: CreateUserRequestDto formatında veri gönder
       if (!user.value.password) {
         errorMessage.value = "Şifre alanı boş bırakılamaz.";
         return;
@@ -117,10 +109,9 @@ const handleSubmit = async () => {
       };
       await apiService.createUser(createData);
     }
-    router.push('/users'); // Listeye geri dön
+    router.push('/users');
   } catch (error) {
     console.error('Kullanıcı kaydedilirken/güncellenirken hata:', error);
-    // Backend'den gelen spesifik hata mesajını göstermek daha iyi olur
     errorMessage.value = 'İşlem sırasında bir hata oluştu. (Kullanıcı adı/email zaten var mı?)';
   }
 };
@@ -131,14 +122,12 @@ const goBack = () => {
 </script>
 
 <style scoped>
-/* Stiller diğer formlarla aynı */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
 .form-group input,
 .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-/* Disabled input için stil */
 .form-group input:disabled { background-color: #eee; cursor: not-allowed; }
 .btn-grey { background-color: #f0f0f0; border: 1px solid #ccc; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-right: 10px; font-weight: bold; }
 .btn-grey:hover { background-color: #e0e0e0; }

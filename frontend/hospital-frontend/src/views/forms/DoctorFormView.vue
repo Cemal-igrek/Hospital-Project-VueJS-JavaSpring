@@ -42,7 +42,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
 
-// Form verisi
 const doctor = ref({
   fullName: '',
   specialty: '',
@@ -57,7 +56,6 @@ const route = useRoute();
 const doctorId = computed(() => route.params.id);
 const isEditMode = computed(() => !!doctorId.value);
 
-// Düzenleme modundaysa veriyi çek
 onMounted(async () => {
   if (isEditMode.value) {
     try {
@@ -70,16 +68,13 @@ onMounted(async () => {
   }
 });
 
-// Formu kaydet/güncelle
 const handleSubmit = async () => {
   errorMessage.value = null;
-  // userId'nin null olmadığından emin olalım
   if (!doctor.value.userId) {
     errorMessage.value = "Lütfen ilişkili bir Kullanıcı ID'si girin.";
     return;
   }
 
-  // API'ye gönderilecek veri (CreateDoctorRequestDto formatında)
   const doctorData = {
     fullName: doctor.value.fullName,
     specialty: doctor.value.specialty,
@@ -106,7 +101,6 @@ const goBack = () => {
 </script>
 
 <style scoped>
-/* Stiller PatientFormView ile aynı */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }

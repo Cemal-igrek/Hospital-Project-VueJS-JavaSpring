@@ -59,12 +59,10 @@ const receteler = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Rol kontrolü
 const user = computed(() => authStore.user);
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 const canDoctor = computed(() => user.value?.role === 'DOCTOR');
 
-// Veri çekme
 const fetchPrescriptions = async () => {
   loading.value = true;
   error.value = null;
@@ -81,12 +79,11 @@ const fetchPrescriptions = async () => {
 
 onMounted(fetchPrescriptions);
 
-// Silme
 const handleDeletePrescription = async (id) => {
   if (confirm('Bu reçeteyi silmek istediğinizden emin misiniz?')) {
     try {
       await apiService.deletePrescription(id);
-      fetchPrescriptions(); // Listeyi yenile
+      fetchPrescriptions();
     } catch (err) {
       error.value = 'Reçete silinemedi.';
       console.error(err);
@@ -96,7 +93,6 @@ const handleDeletePrescription = async (id) => {
 </script>
 
 <style scoped>
-/* Stiller diğer listeleme sayfalarıyla aynı */
 .add-button { margin-bottom: 15px; display: inline-block; }
 .page-container { padding: 20px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }

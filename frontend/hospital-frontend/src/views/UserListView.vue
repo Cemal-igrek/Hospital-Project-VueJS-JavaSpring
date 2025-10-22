@@ -50,13 +50,11 @@
 import { ref, onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import apiService from '@/services/apiService';
-// import { authStore } from '@/store/auth'; // Rol kontrolüne gerek yok, sayfa zaten korumalı
 
 const kullanicilar = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Veri çekme
 const fetchUsers = async () => {
   loading.value = true;
   error.value = null;
@@ -73,13 +71,11 @@ const fetchUsers = async () => {
 
 onMounted(fetchUsers);
 
-// Silme
 const handleDeleteUser = async (id) => {
-  // TODO: Admin kendi kendini silememeli gibi bir kontrol eklenebilir
   if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
     try {
       await apiService.deleteUser(id);
-      fetchUsers(); // Listeyi yenile
+      await fetchUsers();
     } catch (err) {
       error.value = 'Kullanıcı silinemedi.';
       console.error(err);
@@ -89,7 +85,6 @@ const handleDeleteUser = async (id) => {
 </script>
 
 <style scoped>
-/* Stiller diğer listeleme sayfalarıyla aynı */
 .add-button { margin-bottom: 15px; display: inline-block; }
 .page-container { padding: 20px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }

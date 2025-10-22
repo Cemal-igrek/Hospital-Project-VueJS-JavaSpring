@@ -49,20 +49,18 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { RouterLink } from 'vue-router'; // RouterLink'i import et
+import { RouterLink } from 'vue-router';
 import apiService from '@/services/apiService';
-import { authStore } from '@/store/auth'; // Rol kontrolü için store
+import { authStore } from '@/store/auth';
 
 const hastalar = ref([]);
 const loading = ref(false);
 const errorMessage = ref(null);
 
-// Rol kontrolü için computed değişkenler
 const user = computed(() => authStore.user);
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 const canSecretary = computed(() => user.value?.role === 'SECRETARY');
 
-// Veriyi çekme fonksiyonu (tekrar kullanılabilir hale getirdik)
 const fetchPatients = async () => {
   loading.value = true;
   errorMessage.value = null;
@@ -77,21 +75,13 @@ const fetchPatients = async () => {
   }
 };
 
-// Component yüklendiğinde hastaları çek
 onMounted(fetchPatients);
 
-// SİL BUTONU METODU
 const handleDeletePatient = async (id) => {
-  // Kullanıcıdan onay al
   if (confirm('Bu hastayı silmek istediğinizden emin misiniz?')) {
     try {
-      // API'yi çağır
       await apiService.deletePatient(id);
-      // Başarılı olursa:
-      // 1. Yöntem: Listeyi yeniden çek (en kolayı)
       fetchPatients();
-      // 2. Yöntem: Silinen hastayı 'hastalar' array'inden manuel çıkar (daha performanslı)
-      // hastalar.value = hastalar.value.filter(h => h.id !== id);
     } catch (error) {
       console.error('Hasta silinirken hata:', error);
       errorMessage.value = 'Hasta silinemedi.';
@@ -101,12 +91,10 @@ const handleDeletePatient = async (id) => {
 </script>
 
 <style scoped>
-/* Stiller öncekiyle aynı, sadece add-button için margin ekleyebiliriz */
 .add-button {
   margin-bottom: 15px;
-  display: inline-block; /* Buton gibi davranması için */
+  display: inline-block;
 }
-/* ... (Diğer stil kodları aynı) ... */
 .page-container { padding: 20px; }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }

@@ -17,22 +17,18 @@ const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', name: 'login', component: LoginView, meta: { requiresGuest: true } },
 
-  // --- Hasta Rotaları ---
   { path: '/patients', name: 'patients', component: PatientListView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
   { path: '/patients/new', name: 'patient-new', component: PatientFormView, meta: { roles: ['ADMIN', 'SECRETARY'] } },
   { path: '/patients/:id/edit', name: 'patient-edit', component: PatientFormView, meta: { roles: ['ADMIN', 'SECRETARY'] } },
 
-  // --- Doktor Rotaları ---
   { path: '/doctors', name: 'doctors', component: DoctorListView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
   { path: '/doctors/new', name: 'doctor-new', component: DoctorFormView, meta: { roles: ['ADMIN'] } },
   { path: '/doctors/:id/edit', name: 'doctor-edit', component: DoctorFormView, meta: { roles: ['ADMIN'] } },
 
-  // --- Muayene Rotaları ---
   { path: '/appointments', name: 'appointments', component: AppointmentListView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
   { path: '/appointments/new', name: 'appointment-new', component: AppointmentFormView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
   { path: '/appointments/:id/edit', name: 'appointment-edit', component: AppointmentFormView, meta: { roles: ['ADMIN', 'DOCTOR', 'SECRETARY'] } },
 
-  // --- Reçete Rotaları ---
   { path: '/prescriptions', name: 'prescriptions', component: PrescriptionListView, meta: { roles: ['ADMIN', 'DOCTOR'] } },
   { path: '/prescriptions/new', name: 'prescription-new', component: PrescriptionFormView, meta: { roles: ['DOCTOR'] } },
   { path: '/prescriptions/:id/edit', name: 'prescription-edit', component: PrescriptionFormView, meta: { roles: ['ADMIN', 'DOCTOR'] } },
@@ -43,17 +39,17 @@ const routes = [
     component: UserListView,
     meta: { roles: ['ADMIN'] }
   },
-  { // YENİ: Kullanıcı Ekleme Formu
+  {
     path: '/users/new',
     name: 'user-new',
     component: UserFormView,
-    meta: { roles: ['ADMIN'] } // Sadece Admin
+    meta: { roles: ['ADMIN'] }
   },
-  { // YENİ: Kullanıcı Düzenleme Formu
+  {
     path: '/users/:id/edit',
     name: 'user-edit',
     component: UserFormView,
-    meta: { roles: ['ADMIN'] } // Sadece Admin
+    meta: { roles: ['ADMIN'] }
   },
 ];
 
@@ -62,7 +58,7 @@ const router = createRouter({
   routes
 });
 
-// Navigation Guard (Aynı)
+
 router.beforeEach((to, from, next) => {
   const user = authStore.user;
   const requiresRoles = to.meta.roles;
@@ -72,7 +68,7 @@ router.beforeEach((to, from, next) => {
   if (requiresGuest && user) return next({ name: 'patients' }); // veya dashboard
   if (requiresRoles && user && !requiresRoles.includes(user.role)) return next({ name: 'patients' }); // Yetkisizse anasayfaya
 
-  next(); // Diğer durumlarda izin ver
+  next();
 });
 
 export default router

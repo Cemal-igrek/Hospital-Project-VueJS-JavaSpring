@@ -56,21 +56,15 @@ import { authStore } from '@/store/auth';
 
 const router = useRouter();
 
-// Store'daki 'user' verisine reaktif bir şekilde bağlan
 const user = computed(() => authStore.user);
 
-// Rolleri daha kolay kontrol etmek için computed (hesaplanmış) değişkenler
 const canAdmin = computed(() => user.value?.role === 'ADMIN');
 const canDoctor = computed(() => user.value?.role === 'DOCTOR');
 const canSecretary = computed(() => user.value?.role === 'SECRETARY');
 
-// Çıkış yap metodu
 const handleLogout = () => {
   authStore.logout();
-  // TODO: Backend'de bir /api/auth/logout endpoint'i varsa
-  // onu da çağırıp cookie'yi temizlemek gerekir.
 
-  // Kullanıcıyı login sayfasına yönlendir
   router.push('/login');
 };
 </script>
@@ -102,7 +96,7 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
-  flex-grow: 1; /* Navigasyonun kalan boşluğu doldurmasını sağlar */
+  flex-grow: 1;
 }
 
 .sidebar nav a {
@@ -128,11 +122,11 @@ const handleLogout = () => {
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #fff; /* PDF'in istediği beyaz zemin */
+  background-color: #fff;
 }
 
 .user-footer {
-  margin-top: auto; /* En alta iter */
+  margin-top: auto;
   padding-top: 15px;
   border-top: 1px solid #ddd;
   text-align: center;

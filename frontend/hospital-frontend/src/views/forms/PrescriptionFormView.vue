@@ -47,7 +47,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import apiService from '@/services/apiService';
 
-// Form verisi
 const prescription = ref({
   appointmentId: '',
   medicationName: '',
@@ -55,7 +54,6 @@ const prescription = ref({
   instructions: ''
 });
 
-// Muayene dropdown'u için liste
 const availableAppointments = ref([]);
 
 const errorMessage = ref(null);
@@ -65,9 +63,7 @@ const route = useRoute();
 const prescriptionId = computed(() => route.params.id);
 const isEditMode = computed(() => !!prescriptionId.value);
 
-// Component yüklendiğinde
 onMounted(async () => {
-  // 1. Muayeneleri çek (Dropdown için)
   try {
     const response = await apiService.getAppointments();
     availableAppointments.value = response.data;
@@ -76,12 +72,10 @@ onMounted(async () => {
     console.error(error);
   }
 
-  // 2. Düzenleme modundaysak, mevcut reçete verisini çek
   if (isEditMode.value) {
     try {
       const response = await apiService.getPrescriptionById(prescriptionId.value);
       const data = response.data;
-      // API'den gelen veriyi form modeline ata
       prescription.value.appointmentId = data.appointmentId;
       prescription.value.medicationName = data.medicationName;
       prescription.value.dose = data.dose;
@@ -93,10 +87,9 @@ onMounted(async () => {
   }
 });
 
-// Formu kaydet/güncelle
 const handleSubmit = async () => {
   errorMessage.value = null;
-  // API'ye gönderilecek veri (CreatePrescriptionRequestDto formatında)
+
   const prescriptionData = {
     appointmentId: prescription.value.appointmentId,
     medicationName: prescription.value.medicationName,
@@ -110,7 +103,7 @@ const handleSubmit = async () => {
     } else {
       await apiService.createPrescription(prescriptionData);
     }
-    router.push('/prescriptions'); // Listeye geri dön
+    router.push('/prescriptions');
   } catch (error) {
     console.error('Reçete kaydedilirken/güncellenirken hata:', error);
     errorMessage.value = 'İşlem sırasında bir hata oluştu.';
@@ -123,7 +116,6 @@ const goBack = () => {
 </script>
 
 <style scoped>
-/* Stiller diğer formlarla benzer */
 .page-container { padding: 20px; }
 .crud-form { max-width: 600px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }

@@ -90,5 +90,8 @@ export default {
   },
   deletePrescription(id) {
     return apiClient.delete(`/prescriptions/${id}`);
+  },
+  getPrescriptions() {
+    return apiClient.get('/prescriptions');
   }
 };

@@ -24,6 +24,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         this.appointmentRepository = appointmentRepository;
     }
 
+
     @Override
     @Transactional
     public PrescriptionDto createPrescription(CreatePrescriptionRequestDto requestDto) {
@@ -82,6 +83,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if (prescriptionRepository.findById(id).isPresent()) {
             prescriptionRepository.deleteById(id);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<PrescriptionDto> getPrescription() {
+        return prescriptionRepository.findAll().stream().map(PrescriptionMapper::toDto).collect(Collectors.toList());
     }
 }
 

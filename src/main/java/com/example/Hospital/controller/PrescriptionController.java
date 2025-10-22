@@ -18,6 +18,11 @@ public class PrescriptionController {
     public PrescriptionController(PrescriptionService prescriptionService) {
         this.prescriptionService = prescriptionService;
     }
+    @GetMapping
+    public ResponseEntity<List<PrescriptionDto>> getPrescription()
+    {
+        return ResponseEntity.ok(this.prescriptionService.getPrescription());
+    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")

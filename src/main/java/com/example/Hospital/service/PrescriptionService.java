@@ -11,4 +11,5 @@ public interface PrescriptionService {
     List<PrescriptionDto> getPrescriptionsByAppointmentId(Long appointmentId) throws Exception;
     PrescriptionDto updatePrescription(Long id, CreatePrescriptionRequestDto requestDto);
     void deletePrescription(Long id);
+    List<PrescriptionDto> getPrescription();
 }

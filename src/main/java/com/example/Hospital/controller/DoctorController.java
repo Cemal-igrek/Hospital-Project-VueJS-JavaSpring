@@ -49,7 +49,6 @@ public class DoctorController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
         return ResponseEntity.noContent().build();

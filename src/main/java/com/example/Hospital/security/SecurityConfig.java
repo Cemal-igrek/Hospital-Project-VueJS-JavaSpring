@@ -85,22 +85,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-
-                        // 1. YENİ KURAL:
-                        // Tüm 'OPTIONS' preflight isteklerine izinsiz izin ver.
-                        // Bu, CORS hatasını (403) çözecektir.
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        // 2. GİRİŞ (LOGIN) ve REFRESH endpoint'lerine izin ver
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        // 3. Admin oluşturduğumuz için /api/users iznini kaldırdık.
-
-                        // 4. Swagger (API dokümantasyonu) için izin ver
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                        // 5. Yukarıdakiler dışındaki DİĞER TÜM istekler kimlik doğrulaması gerektirsin
-                        .anyRequest().authenticated()
+                        // ESKİ: .anyRequest().authenticated()
+                        // YENİ (Geçici): Tüm /api yolları için sadece kimlik doğrulaması iste
+                        .requestMatchers("/api/**").authenticated()
+                        // Diğer her şey (örn: statik dosyalar) serbest olabilir
+                        .anyRequest().permitAll()
                 )
 
                 .authenticationProvider(authenticationProvider())
